@@ -68,7 +68,7 @@ namespace ParallaxStarter
             var bigPlanetTexture = Content.Load<Texture2D>("bigPlanet");
             var ringPlanetTexture = Content.Load<Texture2D>("ringPlanet");
 
-            var mazeTexture = Content.Load<Texture2D>("pixel");
+            var mazeTexture = Content.Load<Texture2D>("wall");
 
             // Create corresponding StaticSprites
             var backgroundSprite = new StaticSprite(backgroundTexture, new Vector2(0, 0));
@@ -114,10 +114,10 @@ namespace ParallaxStarter
             starsLayer.DrawOrder = 1;
             farPlanetsLayer.DrawOrder = 2;
             bigPlanetLayer.DrawOrder = 3;
-            playerLayer.DrawOrder = 4;
-            ringPlanetLayer.DrawOrder = 5;
-
-            mazeLayer.DrawOrder = 4;
+            ringPlanetLayer.DrawOrder = 4;
+            playerLayer.DrawOrder = 5;
+            
+            mazeLayer.DrawOrder = 5;
 
             // Add parallax layers to components
             Components.Add(backgroundLayer);
@@ -137,7 +137,7 @@ namespace ParallaxStarter
             farPlanetsLayer.ScrollController = new PlayerTrackingScrollController(player, 0.3f);
             bigPlanetLayer.ScrollController = new PlayerTrackingScrollController(player, 0.4f);
             playerLayer.ScrollController = new PlayerTrackingScrollController(player, 1.0f);
-            ringPlanetLayer.ScrollController = new PlayerTrackingScrollController(player, 1.0f);
+            ringPlanetLayer.ScrollController = new PlayerTrackingScrollController(player, 0.5f);
 
             mazeLayer.ScrollController = new PlayerTrackingScrollController(player, 1.0f);
         }
@@ -163,6 +163,15 @@ namespace ParallaxStarter
 
             // TODO: Add your update logic here
             player.Update(gameTime);
+
+            foreach(BoundingRectangle wall in walls.Maze)
+            {
+                if(player.bounds.CollidesWith(wall))
+                {
+                    player.Speed *= 0;
+                    player.gameState = GameState.Over;
+                }
+            }
 
             base.Update(gameTime);
         }

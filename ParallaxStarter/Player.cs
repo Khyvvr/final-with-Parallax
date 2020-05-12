@@ -153,7 +153,7 @@ namespace ParallaxStarter
                 FRAME_HEIGHT);
 
             // Render the character
-            spriteBatch.Draw(spritesheet, Position, sourceRect, Color.White, 0, origin, 3f, SpriteEffects.None, 0.0f);
+            spriteBatch.Draw(spritesheet, Position, sourceRect, Color.White, 0, origin, 3f, SpriteEffects.None, 1);
         }
 
     }
