@@ -18,7 +18,8 @@ namespace ParallaxStarter
             get
             {
                 float x = ScrollRatio * (Offset - player.Position.X);
-                return Matrix.CreateTranslation(x, 0, 0);
+                float y = ScrollRatio * (Offset - player.Position.Y);
+                return Matrix.CreateTranslation(x, y, 0);
             }
         }
 

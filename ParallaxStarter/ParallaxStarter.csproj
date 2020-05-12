@@ -42,6 +42,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AutoScrollController.cs" />
+    <Compile Include="BoundingRectangle.cs" />
+    <Compile Include="Collison.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="IScrollController.cs" />
     <Compile Include="ISprite.cs" />
@@ -51,6 +53,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StaticSprite.cs" />
+    <Compile Include="Walls.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

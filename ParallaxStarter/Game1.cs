@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -13,12 +15,15 @@ namespace ParallaxStarter
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        Walls walls;
         Player player;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            walls = new Walls(this);
         }
 
         /// <summary>
@@ -30,6 +35,11 @@ namespace ParallaxStarter
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            graphics.PreferredBackBufferWidth = 1500;
+            graphics.PreferredBackBufferHeight = 900;
+            graphics.ApplyChanges();
+
+            walls.Initialize();
 
             base.Initialize();
         }
@@ -44,80 +54,92 @@ namespace ParallaxStarter
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            var spritesheet = Content.Load<Texture2D>("helicopter");
-            player = new Player(spritesheet);
+            walls.LoadContent(Content);
 
+            var spritesheet = Content.Load<Texture2D>("character");
+            player = new Player(spritesheet, this);
+            
+
+            // Parallax Implementation START
+            // Load Textures
             var backgroundTexture = Content.Load<Texture2D>("background");
-            var backgroundSprite = new StaticSprite(backgroundTexture);
+            var starsTexture = Content.Load<Texture2D>("stars");
+            var farPlanetsTexture = Content.Load<Texture2D>("farPlanets");
+            var bigPlanetTexture = Content.Load<Texture2D>("bigPlanet");
+            var ringPlanetTexture = Content.Load<Texture2D>("ringPlanet");
+
+            var mazeTexture = Content.Load<Texture2D>("pixel");
+
+            // Create corresponding StaticSprites
+            var backgroundSprite = new StaticSprite(backgroundTexture, new Vector2(0, 0));
+            var starsSprite = new StaticSprite(starsTexture, new Vector2(0, 0));
+            var farPlanetsSprite = new StaticSprite(farPlanetsTexture, new Vector2(100, 200));
+            var bigPlanetSprite = new StaticSprite(bigPlanetTexture, new Vector2(300, 300));
+            var ringPlanetSprite = new StaticSprite(ringPlanetTexture, new Vector2(800, 200));
+
+            var mazeSprites = new List<StaticSprite>();
+            foreach (BoundingRectangle wall in walls.Maze)
+            {
+                // set staticsprite for each wall of the maze and give it corresponding position (mazeTexture, wall.Position)
+                var position = new Vector2(wall.X, wall.Y);
+                var sprite = new StaticSprite(mazeTexture, position, wall.Width, wall.Height);
+
+                mazeSprites.Add(sprite);
+            }
+
+            // Create corresponding Parallax Layers
             var backgroundLayer = new ParallaxLayer(this);
-            backgroundLayer.Sprites.Add(backgroundSprite);
-            backgroundLayer.DrawOrder = 0;
-            Components.Add(backgroundLayer);
-
+            var starsLayer = new ParallaxLayer(this);
+            var farPlanetsLayer = new ParallaxLayer(this);
+            var bigPlanetLayer = new ParallaxLayer(this);
             var playerLayer = new ParallaxLayer(this);
+            var ringPlanetLayer = new ParallaxLayer(this);
+
+            var mazeLayer = new ParallaxLayer(this);
+            foreach (var sprite in mazeSprites)
+            {
+                mazeLayer.Sprites.Add(sprite);
+            }
+
+            // Add sprites to corresponding layers
+            backgroundLayer.Sprites.Add(backgroundSprite);
+            starsLayer.Sprites.Add(starsSprite);
+            farPlanetsLayer.Sprites.Add(farPlanetsSprite);
+            bigPlanetLayer.Sprites.Add(bigPlanetSprite);
             playerLayer.Sprites.Add(player);
-            playerLayer.DrawOrder = 2;
+            ringPlanetLayer.Sprites.Add(ringPlanetSprite);
+
+            // Create Draw Order (back to front)
+            backgroundLayer.DrawOrder = 0;
+            starsLayer.DrawOrder = 1;
+            farPlanetsLayer.DrawOrder = 2;
+            bigPlanetLayer.DrawOrder = 3;
+            playerLayer.DrawOrder = 4;
+            ringPlanetLayer.DrawOrder = 5;
+
+            mazeLayer.DrawOrder = 4;
+
+            // Add parallax layers to components
+            Components.Add(backgroundLayer);
+            Components.Add(starsLayer);
+            Components.Add(farPlanetsLayer);
+            Components.Add(bigPlanetLayer);
             Components.Add(playerLayer);
+            Components.Add(ringPlanetLayer);
 
-            var midgroundTextures = new Texture2D[]
-            {
-                Content.Load<Texture2D>("midground1"),
-                Content.Load<Texture2D>("midground2")
-            };
-
-            var midgroundSprites = new StaticSprite[]
-            {
-                new StaticSprite(midgroundTextures[0]),
-                new StaticSprite(midgroundTextures[1], new Vector2(3500, 0))
-            };
-
-            var midgroundLayer = new ParallaxLayer(this);
-            midgroundLayer.Sprites.AddRange(midgroundSprites);
-            midgroundLayer.DrawOrder = 1;
-
-            var midgroundScrollController = midgroundLayer.ScrollController as AutoScrollController;
-            midgroundScrollController.Speed = 40f;
-            Components.Add(midgroundLayer);
-
-
-            var foregroundTextures = new List<Texture2D>()
-            {
-                Content.Load<Texture2D>("foreground1"),
-                Content.Load<Texture2D>("foreground2"),
-                Content.Load<Texture2D>("foreground3"),
-                Content.Load<Texture2D>("foreground4")
-            };
-
-            var foregroundSprites = new List<StaticSprite>();
-            for(int i = 0; i < foregroundTextures.Count; i++)
-            {
-                var position = new Vector2(i * 3500, 0);
-                var sprite = new StaticSprite(foregroundTextures[i], position);
-                foregroundSprites.Add(sprite);
-            }
-
-            var foregroundLayer = new ParallaxLayer(this);
-            foreach(var sprite in foregroundSprites)
-            {
-                foregroundLayer.Sprites.Add(sprite);
-            }
-
-            foregroundLayer.DrawOrder = 4;
-
-            var foregroundScrollController = foregroundLayer.ScrollController as AutoScrollController;
-            foregroundScrollController.Speed = 80f;
-            Components.Add(foregroundLayer);
-
-            var playerScrollController = playerLayer.ScrollController as AutoScrollController;
-            playerScrollController.Speed = 80f; 
+            Components.Add(mazeLayer);
 
 
 
             // SCROLLING WITH PLAYER (PART 8 IN LAB TUTORIAL)
             backgroundLayer.ScrollController = new PlayerTrackingScrollController(player, 0.1f);
-            midgroundLayer.ScrollController = new PlayerTrackingScrollController(player, 0.4f);
+            starsLayer.ScrollController = new PlayerTrackingScrollController(player, 0.2f);
+            farPlanetsLayer.ScrollController = new PlayerTrackingScrollController(player, 0.3f);
+            bigPlanetLayer.ScrollController = new PlayerTrackingScrollController(player, 0.4f);
             playerLayer.ScrollController = new PlayerTrackingScrollController(player, 1.0f);
-            foregroundLayer.ScrollController = new PlayerTrackingScrollController(player, 1.0f);
+            ringPlanetLayer.ScrollController = new PlayerTrackingScrollController(player, 1.0f);
+
+            mazeLayer.ScrollController = new PlayerTrackingScrollController(player, 1.0f);
         }
 
         /// <summary>
@@ -151,7 +173,8 @@ namespace ParallaxStarter
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            var environmentColor = new Color(r:16,g:7,b:16);
+            GraphicsDevice.Clear(environmentColor);
 
             // TODO: Add your drawing code here
             
