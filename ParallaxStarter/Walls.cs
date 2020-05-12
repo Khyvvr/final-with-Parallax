@@ -18,8 +18,22 @@ namespace ParallaxStarter
         const int WALL_WIDTH = 50;
         const int CORRIDOR_WIDTH = 136;
 
+        const int CELL_DIMENSIONS = 135;
+
+        int[,] maze = new int[,] {{1,1,1,1,1,1,1,1,1,1,1,1},
+                                  {1,0,0,0,0,0,0,0,0,0,0,1},
+                                  {1,0,0,0,0,0,0,0,0,0,0,1},
+                                  {1,0,0,0,0,0,0,0,0,0,0,1},
+                                  {1,0,0,0,0,0,0,0,0,0,0,1},
+                                  {1,0,0,0,0,0,0,0,0,0,0,1},
+                                  {1,0,0,0,0,0,0,0,0,0,0,1},
+                                  {1,0,0,0,0,0,0,0,0,0,0,1},
+                                  {1,0,0,0,0,0,0,0,0,0,0,1},
+                                  {1,1,1,1,1,1,1,1,1,1,1,1}};
+
         public List<BoundingRectangle> Maze = new List<BoundingRectangle>();
 
+        /*
         public BoundingRectangle WallN = new BoundingRectangle();
         public BoundingRectangle WallS = new BoundingRectangle();
         public BoundingRectangle WallE = new BoundingRectangle();
@@ -34,6 +48,7 @@ namespace ParallaxStarter
         public BoundingRectangle MazeWall07 = new BoundingRectangle();
         public BoundingRectangle MazeWall08 = new BoundingRectangle();
         public BoundingRectangle MazeWall09 = new BoundingRectangle();
+        */
 
         public Walls(Game1 game)
         {
@@ -42,6 +57,23 @@ namespace ParallaxStarter
 
         public void Initialize()
         {
+            for(int i = 0; i < maze.GetLength(0); i++)
+            {
+                for(int j = 0; j < maze.GetLength(1); j++)
+                {
+                    if(maze[i,j] == 1)
+                    {
+                        BoundingRectangle cell = new BoundingRectangle();
+                        cell.X = i * CELL_DIMENSIONS;
+                        cell.Y = j * CELL_DIMENSIONS;
+                        cell.Width = CELL_DIMENSIONS;
+                        cell.Height = CELL_DIMENSIONS;
+                        Maze.Add(cell);
+                    }
+                }
+            }
+
+            /*
             WallN.X = -50;
             WallN.Y = -50;
             WallN.Width = 2050;
@@ -118,7 +150,7 @@ namespace ParallaxStarter
             MazeWall09.Y = MazeWall08.Y + MazeWall08.Height;
             MazeWall09.Width = WALL_WIDTH;
             MazeWall09.Height = (3 * CORRIDOR_WIDTH) + (2 * WALL_WIDTH);
-            Maze.Add(MazeWall09);
+            Maze.Add(MazeWall09);*/
         }
 
         public void LoadContent(ContentManager content)
