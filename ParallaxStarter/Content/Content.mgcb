@@ -37,6 +37,13 @@
 /processorParam:TextureFormat=Color
 /build:bigPlanet.png
 
+#begin Calibri.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Calibri.spritefont
+
 #begin character.png
 /importer:TextureImporter
 /processor:TextureProcessor

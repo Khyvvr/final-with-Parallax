@@ -70,6 +70,8 @@ namespace ParallaxStarter
 
             var mazeTexture = Content.Load<Texture2D>("wall");
 
+            var font = Content.Load<SpriteFont>("Calibri");
+
             // Create corresponding StaticSprites
             var backgroundSprite = new StaticSprite(backgroundTexture, new Vector2(0, 0));
             var starsSprite = new StaticSprite(starsTexture, new Vector2(0, 0));
@@ -87,6 +89,20 @@ namespace ParallaxStarter
                 mazeSprites.Add(sprite);
             }
 
+            var offset = new Vector2(750, 500);
+            offset.X -= player.bounds.X;
+            offset.Y -= player.bounds.Y;
+
+            var textOffset1 = offset * -1;
+            textOffset1.X += 5;
+            textOffset1.Y += 5;
+            var textOffset2 = offset * -1;
+            textOffset2.X += 5;
+            textOffset2.Y += 35;
+
+            var fontSpriteFont1 = new FontSpriteTest(font, "Reach the goal in the bottom-right corner", textOffset1);
+            var fontSpriteFont2 = new FontSpriteTest(font, "Don't touch the walls", textOffset2);
+
             // Create corresponding Parallax Layers
             var backgroundLayer = new ParallaxLayer(this);
             var starsLayer = new ParallaxLayer(this);
@@ -101,6 +117,8 @@ namespace ParallaxStarter
                 mazeLayer.Sprites.Add(sprite);
             }
 
+            var fontLayer = new ParallaxLayer(this);
+
             // Add sprites to corresponding layers
             backgroundLayer.Sprites.Add(backgroundSprite);
             starsLayer.Sprites.Add(starsSprite);
@@ -108,6 +126,9 @@ namespace ParallaxStarter
             bigPlanetLayer.Sprites.Add(bigPlanetSprite);
             playerLayer.Sprites.Add(player);
             ringPlanetLayer.Sprites.Add(ringPlanetSprite);
+
+            fontLayer.Sprites.Add(fontSpriteFont1);
+            fontLayer.Sprites.Add(fontSpriteFont2);
 
             // Create Draw Order (back to front)
             backgroundLayer.DrawOrder = 0;
@@ -119,6 +140,8 @@ namespace ParallaxStarter
             
             mazeLayer.DrawOrder = 5;
 
+            fontLayer.DrawOrder = 6;
+
             // Add parallax layers to components
             Components.Add(backgroundLayer);
             Components.Add(starsLayer);
@@ -128,6 +151,8 @@ namespace ParallaxStarter
             Components.Add(ringPlanetLayer);
 
             Components.Add(mazeLayer);
+
+            Components.Add(fontLayer);
 
 
 
@@ -140,6 +165,7 @@ namespace ParallaxStarter
             ringPlanetLayer.ScrollController = new PlayerTrackingScrollController(player, 0.5f);
 
             mazeLayer.ScrollController = new PlayerTrackingScrollController(player, 1.0f);
+            fontLayer.ScrollController = new PlayerTrackingScrollController(player, 1.0f);
         }
 
         /// <summary>
