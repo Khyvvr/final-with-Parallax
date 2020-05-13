@@ -102,17 +102,17 @@ namespace ParallaxStarter
                 animationState = State.West;
                 direction.X -= 1;
             }
-            if (keyboard.IsKeyDown(Keys.Right) || keyboard.IsKeyDown(Keys.D)) 
+            else if (keyboard.IsKeyDown(Keys.Right) || keyboard.IsKeyDown(Keys.D)) 
             {
                 animationState = State.East;
                 direction.X += 1;
             }
-            if(keyboard.IsKeyDown(Keys.Up) || keyboard.IsKeyDown(Keys.W))
+            else if(keyboard.IsKeyDown(Keys.Up) || keyboard.IsKeyDown(Keys.W))
             {
                 animationState = State.North;
                 direction.Y -= 1;
             }
-            if(keyboard.IsKeyDown(Keys.Down) || keyboard.IsKeyDown(Keys.S))
+            else if(keyboard.IsKeyDown(Keys.Down) || keyboard.IsKeyDown(Keys.S))
             {
                 animationState = State.South;
                 direction.Y += 1;
