@@ -18,8 +18,6 @@ namespace ParallaxStarter
         Walls walls;
         Player player;
 
-        SpriteFont font;
-
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -72,6 +70,8 @@ namespace ParallaxStarter
 
             var mazeTexture = Content.Load<Texture2D>("wall");
 
+            var font = Content.Load<SpriteFont>("Calibri");
+
             // Create corresponding StaticSprites
             var backgroundSprite = new StaticSprite(backgroundTexture, new Vector2(0, 0));
             var starsSprite = new StaticSprite(starsTexture, new Vector2(0, 0));
@@ -89,6 +89,21 @@ namespace ParallaxStarter
                 mazeSprites.Add(sprite);
             }
 
+            var offset = new Vector2(750, 500);
+            offset.X -= player.bounds.X;
+            offset.Y -= player.bounds.Y;
+
+            var textOffset1 = offset * -1;
+            textOffset1.X += 5;
+            textOffset1.Y += 5;
+            var textOffset2 = offset * -1;
+            textOffset2.X += 5;
+            textOffset2.Y += 35;
+
+            var fontSpriteFont1 = new FontSpriteTest(font, "Reach the goal in the bottom-right corner", textOffset1, this.player);
+            var fontSpriteFont2 = new FontSpriteTest(font, "Don't touch the walls", textOffset2, this.player);
+
+
             // Create corresponding Parallax Layers
             var backgroundLayer = new ParallaxLayer(this);
             var starsLayer = new ParallaxLayer(this);
@@ -103,6 +118,8 @@ namespace ParallaxStarter
                 mazeLayer.Sprites.Add(sprite);
             }
 
+            var fontLayer = new ParallaxLayer(this);
+
             // Add sprites to corresponding layers
             backgroundLayer.Sprites.Add(backgroundSprite);
             starsLayer.Sprites.Add(starsSprite);
@@ -110,6 +127,26 @@ namespace ParallaxStarter
             bigPlanetLayer.Sprites.Add(bigPlanetSprite);
             playerLayer.Sprites.Add(player);
             ringPlanetLayer.Sprites.Add(ringPlanetSprite);
+
+            fontLayer.Sprites.Add(fontSpriteFont1);
+            fontLayer.Sprites.Add(fontSpriteFont2);
+
+            if (player.gameState == GameState.Over)
+            {
+                var textOffsetGameOver = offset * -1;
+                textOffsetGameOver.X += 750;
+                textOffsetGameOver.Y += 500;
+                var fontSpriteFont3 = new FontSpriteTest(font, "Game Over", textOffsetGameOver, this.player);
+                fontLayer.Sprites.Add(fontSpriteFont3);
+            }
+            else if (player.gameState == GameState.Win)
+            {
+                var textOffsetWin = offset * -1;
+                textOffsetWin.X += 750;
+                textOffsetWin.Y += 500;
+                var fontSpriteFont3 = new FontSpriteTest(font, "You Win", textOffsetWin, this.player);
+                fontLayer.Sprites.Add(fontSpriteFont3);
+            }
 
             // Create Draw Order (back to front)
             backgroundLayer.DrawOrder = 0;
@@ -121,6 +158,8 @@ namespace ParallaxStarter
             
             mazeLayer.DrawOrder = 5;
 
+            fontLayer.DrawOrder = 6;
+
             // Add parallax layers to components
             Components.Add(backgroundLayer);
             Components.Add(starsLayer);
@@ -130,6 +169,8 @@ namespace ParallaxStarter
             Components.Add(ringPlanetLayer);
 
             Components.Add(mazeLayer);
+
+            Components.Add(fontLayer);
 
 
 
@@ -142,8 +183,7 @@ namespace ParallaxStarter
             ringPlanetLayer.ScrollController = new PlayerTrackingScrollController(player, 0.5f);
 
             mazeLayer.ScrollController = new PlayerTrackingScrollController(player, 1.0f);
-
-            font = Content.Load<SpriteFont>("Calibri");
+            fontLayer.ScrollController = new PlayerTrackingScrollController(player, 1.0f);
         }
 
         /// <summary>
@@ -177,14 +217,6 @@ namespace ParallaxStarter
                 }
             }
 
-            foreach(BoundingRectangle goal in walls.Goal)
-            {
-                if(player.bounds.CollidesWith(goal))
-                {
-                    player.gameState = GameState.Win;
-                }
-            }
-
             base.Update(gameTime);
         }
 
@@ -198,6 +230,7 @@ namespace ParallaxStarter
             GraphicsDevice.Clear(environmentColor);
 
             // TODO: Add your drawing code here
+            
 
             base.Draw(gameTime);
         }
