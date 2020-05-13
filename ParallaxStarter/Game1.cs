@@ -18,6 +18,8 @@ namespace ParallaxStarter
         Walls walls;
         Player player;
 
+        SpriteFont font;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -140,6 +142,8 @@ namespace ParallaxStarter
             ringPlanetLayer.ScrollController = new PlayerTrackingScrollController(player, 0.5f);
 
             mazeLayer.ScrollController = new PlayerTrackingScrollController(player, 1.0f);
+
+            font = Content.Load<SpriteFont>("Calibri");
         }
 
         /// <summary>
@@ -173,6 +177,14 @@ namespace ParallaxStarter
                 }
             }
 
+            foreach(BoundingRectangle goal in walls.Goal)
+            {
+                if(player.bounds.CollidesWith(goal))
+                {
+                    player.gameState = GameState.Win;
+                }
+            }
+
             base.Update(gameTime);
         }
 
@@ -186,7 +198,6 @@ namespace ParallaxStarter
             GraphicsDevice.Clear(environmentColor);
 
             // TODO: Add your drawing code here
-            
 
             base.Draw(gameTime);
         }

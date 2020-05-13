@@ -15,23 +15,24 @@ namespace ParallaxStarter
         Game1 game;
         Texture2D texture;
 
-        const int WALL_WIDTH = 50;
-        const int CORRIDOR_WIDTH = 138;
+        //const int WALL_WIDTH = 50;
+        //const int CORRIDOR_WIDTH = 138;
 
         const int CELL_DIMENSIONS = 135;
 
-        int[,] maze = new int[,] {{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-                                  {1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,1},
-                                  {1,0,0,0,0,1,0,1,0,1,0,1,1,1,1,1,1},
-                                  {1,0,1,1,1,1,0,1,0,1,0,0,0,0,0,0,1},
-                                  {1,0,0,1,0,0,0,1,0,1,1,1,1,1,1,0,1},
-                                  {1,1,0,1,1,1,1,1,0,1,0,0,0,0,0,0,1},
-                                  {1,0,0,0,0,0,0,0,0,1,0,1,0,1,1,0,1},
-                                  {1,0,1,1,1,1,1,1,0,1,1,1,1,1,0,0,1},
-                                  {1,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1},
-                                  {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}};
+        int[,] mazeArray = new int[,] {{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                                       {1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,1},
+                                       {1,0,0,0,0,1,0,1,0,1,0,1,1,1,1,1,1},
+                                       {1,0,1,1,1,1,0,1,0,1,0,0,0,0,0,0,1},
+                                       {1,0,0,1,0,0,0,1,0,1,1,1,1,1,1,0,1},
+                                       {1,1,0,1,1,1,1,1,0,1,0,0,0,0,0,0,1},
+                                       {1,0,0,0,0,0,0,0,0,1,0,1,0,1,1,0,1},
+                                       {1,0,1,1,1,1,1,1,0,1,1,1,1,1,2,2,1},
+                                       {1,0,0,0,1,0,0,0,0,0,0,0,0,1,2,2,1},
+                                       {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}};
 
         public List<BoundingRectangle> Maze = new List<BoundingRectangle>();
+        public List<BoundingRectangle> Goal = new List<BoundingRectangle>();
 
         /*
         public BoundingRectangle WallN = new BoundingRectangle();
@@ -57,11 +58,11 @@ namespace ParallaxStarter
 
         public void Initialize()
         {
-            for(int i = 0; i < maze.GetLength(0); i++)
+            for(int i = 0; i < mazeArray.GetLength(0); i++)
             {
-                for(int j = 0; j < maze.GetLength(1); j++)
+                for(int j = 0; j < mazeArray.GetLength(1); j++)
                 {
-                    if(maze[i,j] == 1)
+                    if(mazeArray[i,j] == 1)
                     {
                         BoundingRectangle cell = new BoundingRectangle();
                         cell.X = j * CELL_DIMENSIONS;
@@ -69,6 +70,15 @@ namespace ParallaxStarter
                         cell.Width = CELL_DIMENSIONS;
                         cell.Height = CELL_DIMENSIONS;
                         Maze.Add(cell);
+                    }
+                    else if(mazeArray[i,j] == 2)
+                    {
+                        BoundingRectangle cell = new BoundingRectangle();
+                        cell.X = j * CELL_DIMENSIONS;
+                        cell.Y = i * CELL_DIMENSIONS;
+                        cell.Width = CELL_DIMENSIONS;
+                        cell.Height = CELL_DIMENSIONS;
+                        Goal.Add(cell);
                     }
                 }
             }
