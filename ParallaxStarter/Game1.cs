@@ -100,8 +100,9 @@ namespace ParallaxStarter
             textOffset2.X += 5;
             textOffset2.Y += 35;
 
-            var fontSpriteFont1 = new FontSpriteTest(font, "Reach the goal in the bottom-right corner", textOffset1);
-            var fontSpriteFont2 = new FontSpriteTest(font, "Don't touch the walls", textOffset2);
+            var fontSpriteFont1 = new FontSpriteTest(font, "Reach the goal in the bottom-right corner", textOffset1, this.player);
+            var fontSpriteFont2 = new FontSpriteTest(font, "Don't touch the walls", textOffset2, this.player);
+
 
             // Create corresponding Parallax Layers
             var backgroundLayer = new ParallaxLayer(this);
@@ -129,6 +130,23 @@ namespace ParallaxStarter
 
             fontLayer.Sprites.Add(fontSpriteFont1);
             fontLayer.Sprites.Add(fontSpriteFont2);
+
+            if (player.gameState == GameState.Over)
+            {
+                var textOffsetGameOver = offset * -1;
+                textOffsetGameOver.X += 750;
+                textOffsetGameOver.Y += 500;
+                var fontSpriteFont3 = new FontSpriteTest(font, "Game Over", textOffsetGameOver, this.player);
+                fontLayer.Sprites.Add(fontSpriteFont3);
+            }
+            else if (player.gameState == GameState.Win)
+            {
+                var textOffsetWin = offset * -1;
+                textOffsetWin.X += 750;
+                textOffsetWin.Y += 500;
+                var fontSpriteFont3 = new FontSpriteTest(font, "You Win", textOffsetWin, this.player);
+                fontLayer.Sprites.Add(fontSpriteFont3);
+            }
 
             // Create Draw Order (back to front)
             backgroundLayer.DrawOrder = 0;
