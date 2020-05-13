@@ -100,7 +100,7 @@ namespace ParallaxStarter
             textOffset2.X += 5;
             textOffset2.Y += 35;
 
-            var fontSpriteFont1 = new FontSpriteTest(font, "Reach the goal in the bottom-right corner", textOffset1, this.player);
+            var fontSpriteFont1 = new FontSpriteTest(font, "Reach the goal in the bottom-right corner using the arrow keys (or WASD keys)", textOffset1, this.player);
             var fontSpriteFont2 = new FontSpriteTest(font, "Don't touch the walls", textOffset2, this.player);
 
 
