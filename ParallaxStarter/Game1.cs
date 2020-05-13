@@ -216,6 +216,13 @@ namespace ParallaxStarter
                     player.gameState = GameState.Over;
                 }
             }
+            foreach (BoundingRectangle goal in walls.Goal)
+            {
+                if (player.bounds.CollidesWith(goal))
+                {
+                    player.gameState = GameState.Win;
+                }
+            }
 
             base.Update(gameTime);
         }
